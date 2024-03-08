@@ -10,13 +10,13 @@ export class UserController {
     constructor(private userService: UserService) { }
 
     @Post()
-    async create(@Body() body: CreateUserDTO) {
-        return this.userService.create(body);
+    async create(@Body() data: CreateUserDTO) {
+        return this.userService.create(data);
     }
 
     @Get()
-    async read() {
-        return { users: [] }
+    async list() {
+        return this.userService.list();
     }
 
     @Get(':id')

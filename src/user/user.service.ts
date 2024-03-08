@@ -7,7 +7,7 @@ export class UserService {
 
     constructor(private readonly prisma: PrismaService) { }
 
-    async create({ email, nome, password }: CreateUserDTO){
+    async create({ email, nome, password }: CreateUserDTO) {
 
         return this.prisma.user.create({
             data: {
@@ -21,5 +21,17 @@ export class UserService {
             // }
         });
 
+    }
+
+    async list() {
+        return this.prisma.user.findMany(
+            //     {
+            //     where: {
+            //         email: {
+            //             contains: '@gmail.com'
+            //         }
+            //     }
+            // }
+        );
     }
 }
