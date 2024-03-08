@@ -1,0 +1,45 @@
+imports: ( Uma injeção de dependencias onde é possivel ter acesso ao codigo )
+Esta propriedade é usada para importar outros módulos que este módulo depende. Isso permite que você 
+utilize os recursos e funcionalidades desses módulos dentro do módulo atual.
+
+controllers:
+Aqui você normalmente lista as classes de controladores que lidam com as solicitações HTTP e 
+definem as rotas do seu aplicativo.
+
+providers: ( Uma injeção de dependencia encapsulada, onde só é possivel usar os serviços sem acesso ao codigo )
+Esta propriedade é usada para listar os provedores de serviços, que são geralmente classes que 
+fornecem alguma funcionalidade para o aplicativo. Por exemplo, serviços de banco de dados, serviços 
+de autenticação, etc.
+
+exports:
+Aqui você pode listar quaisquer componentes do módulo que deseja tornar disponíveis para outros 
+módulos que o importam. Isso permite que você compartilhe funcionalidades específicas do módulo com 
+outros módulos em seu aplicativo.
+
+=== CRIANDO MODELO USER ===.
+1- Criar um pacote por exemplo user. Componentes devem ter modulo, controller e service, exemplo: 
+user.module.ts, user.controller.ts e user.service.ts. Ambos são conectados por ao modulo pelo'providers[]'.
+2- Depois de criados use o import[UserModule] do app.service para importar esse componente.
+
+=== CONEXÃO COM O BANCO DE DADOS ===
+
+PRISMA
+1- Instale o prisma
+npm i -D prisma
+
+2- Inicie e seguer tutorial ( montar URL de conexão no arquivo .env e configurar no schema.prisma ).
+npx prisma init
+
+3- Crie o banco e a tabela manualmente no banco de dados. Faça pull para atualizar o schema.prisma.
+npx prisma db pull
+
+4- Depois que o banco e o schema.prisma derem match com o comando acima, use generate.
+npx prisma generate
+
+OBS: O prisma usa o arquivo schema.prisma para unir com o banco de dados de uma forma especial. Desta forma, 
+evitando a criação de uma classe modelo e uma classe de conexão com o banco de dados como por exemplo spring data jpa.
+É um arquivo que serve como modelo de entidade e classe de conexão com o banco.
+
+=== CRIANDO SERVICE ===
+1- Crie pacote e components prisma -> prisma.module.ts e prisma.service.ts. Conecte PrismaService ao providers do module.
+2- Depois do codigo. Crie um componente user.service.ts dentro do pacote user. Conecte ao input[PrismaService]
