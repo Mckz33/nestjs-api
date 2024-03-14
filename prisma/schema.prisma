@@ -6,14 +6,15 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-
+// npx prisma migrate dev --name BirthAt ---> comando para atualizar o banco de dados caso seja alterado informação na tabela abaixo.
 model User {
-  id        Int      @id @default(autoincrement()) @db.UnsignedInt
-  nome      String   @db.VarChar(63)
-  email     String   @db.VarChar(127)
-  password  String   @db.VarChar(127)
-  createdAt DateTime @default(now()) @db.Timestamp(0)
-  updatedAt DateTime @default(now()) @db.Timestamp(0)
+  id        Int       @id @default(autoincrement()) @db.UnsignedInt
+  nome      String    @db.VarChar(63)
+  email     String    @db.VarChar(127)
+  password  String    @db.VarChar(127)
+  birthAt   DateTime? @db.Date
+  createdAt DateTime  @default(now()) @db.Timestamp(0)
+  updatedAt DateTime  @default(now()) @db.Timestamp(0)
 
 //@@map é referencia a tabela no banco de dados
   @@map("users")

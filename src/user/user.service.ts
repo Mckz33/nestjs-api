@@ -45,7 +45,29 @@ export class UserService {
         });
     }
 
-    async updatePut(id: number, data: UpdatePutUserDTO) {
+    async updatePut(id: number, { email, nome, password, birthAt }: UpdatePutUserDTO) {
+        return this.prisma.user.update({
+            data: { email, nome, password, birthAt: birthAt ? new Date(birthAt) : null },
+            where: {
+                id
+            }
+
+        });
+    }
+    async updatePatch(id: number, { email, nome, password, birthAt }: UpdatePatchUserDTO) {
+        const data: any = {};
+
+        const updateFields = { email, nome, password, birthAt };
+
+        for (const key in updateFields) {
+            if (updateFields[key] !== undefined) {
+                if (key === 'birthAt') {
+                    data[key] = new Date(updateFields[key]);
+                } else {
+                    data[key] = updateFields[key];
+                }
+            }
+        }
         return this.prisma.user.update({
             data,
             where: {
@@ -53,12 +75,5 @@ export class UserService {
             }
         });
     }
-    async updatePatch(id: number, data: UpdatePatchUserDTO) {
-        return this.prisma.user.update({
-            data,
-            where: {
-                id
-            }
-        });
-    }
+
 }
