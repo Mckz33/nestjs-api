@@ -23,7 +23,7 @@ export class UserService {
 
     }
 
-    async list() {
+    async getAll() {
         return this.prisma.user.findMany(
             //     {
             //     where: {
@@ -33,5 +33,13 @@ export class UserService {
             //     }
             // }
         );
+    }
+
+    async findById(id: number) {
+        return this.prisma.user.findUnique({
+            where: {
+                id
+            }
+        })
     }
 }
