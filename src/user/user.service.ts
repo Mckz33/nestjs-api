@@ -1,5 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { CreateUserDTO } from "src/dtos/create-user.dto";
+import { UpdatePatchUserDTO } from "src/dtos/update-patch-user.dto";
+import { UpdatePutUserDTO } from "src/dtos/update-put-user.dto copy";
 import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
@@ -40,6 +42,23 @@ export class UserService {
             where: {
                 id
             }
-        })
+        });
+    }
+
+    async updatePut(id: number, data: UpdatePutUserDTO) {
+        return this.prisma.user.update({
+            data,
+            where: {
+                id
+            }
+        });
+    }
+    async updatePatch(id: number, data: UpdatePatchUserDTO) {
+        return this.prisma.user.update({
+            data,
+            where: {
+                id
+            }
+        });
     }
 }
