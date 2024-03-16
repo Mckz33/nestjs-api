@@ -1,6 +1,6 @@
 import { ParamId } from 'src/decorators/param-id.decorator';
 import { UserService } from './user.service';
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put } from "@nestjs/common";
 import { CreateUserDTO } from "src/dtos/create-user.dto";
 import { UpdatePatchUserDTO } from "src/dtos/update-patch-user.dto";
 import { UpdatePutUserDTO } from "src/dtos/update-put-user.dto copy";
