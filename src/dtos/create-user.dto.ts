@@ -3,7 +3,7 @@ import { IsDateString, IsEmail, IsOptional, IsString, IsStrongPassword } from "c
 export class CreateUserDTO {
 
     @IsString()
-    nome: string;
+    name: string;
 
     @IsEmail()
     email: string;

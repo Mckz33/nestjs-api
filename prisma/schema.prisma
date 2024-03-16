@@ -9,7 +9,7 @@ datasource db {
 // npx prisma migrate dev --name BirthAt ---> comando para atualizar o banco de dados caso seja alterado informação na tabela abaixo.
 model User {
   id        Int       @id @default(autoincrement()) @db.UnsignedInt
-  nome      String    @db.VarChar(63)
+  name      String    @db.VarChar(63)
   email     String    @db.VarChar(127)
   password  String    @db.VarChar(127)
   birthAt   DateTime? @db.Date

@@ -13,21 +13,21 @@ export class UserService {
      * Cria um novo usuário com os dados fornecidos.
      * @param {CreateUserDTO} userData - Os dados do usuário a serem criados.
      * @param {string} userData.email - O endereço de email do novo usuário.
-     * @param {string} userData.nome - O nome do novo usuário.
+     * @param {string} userData.name - O name do novo usuário.
      * @param {string} userData.password - A senha do novo usuário.
      * @returns {Promise<any>} Uma promessa que resolve quando o usuário é criado com sucesso.
      */
-    async create({ email, nome, password }: CreateUserDTO) {
+    async create({ email, name, password }: CreateUserDTO) {
 
         return this.prisma.user.create({
             data: {
                 email,
-                nome,
+                name,
                 password
             },
             // select: {
             //     id: true,
-            //     nome: true
+            //     name: true
             // }
         });
 
@@ -70,16 +70,16 @@ export class UserService {
      * @param {number} id - O ID do usuário a ser atualizado.
      * @param {UpdatePutUserDTO} userData - Os dados do usuário a serem atualizados.
      * @param {string} userData.email - O novo endereço de email do usuário.
-     * @param {string} userData.nome - O novo nome do usuário.
+     * @param {string} userData.name - O novo name do usuário.
      * @param {string} userData.password - A nova senha do usuário.
      * @param {Date | null} userData.birthAt - A nova data de nascimento do usuário ou nulo.
      * @returns {Promise<any>} Uma promessa que resolve quando a atualização é bem-sucedida.
      * @throws {Error} Lança um erro se o usuário não existir.
      */
-    async updatePut(id: number, { email, nome, password, birthAt }: UpdatePutUserDTO) {
+    async updatePut(id: number, { email, name, password, birthAt }: UpdatePutUserDTO) {
         await this.exists(id);
         return this.prisma.user.update({
-            data: { email, nome, password, birthAt: birthAt ? new Date(birthAt) : null },
+            data: { email, name, password, birthAt: birthAt ? new Date(birthAt) : null },
             where: {
                 id
             }
@@ -91,16 +91,16 @@ export class UserService {
      * @param {number} id - O ID do usuário a ser atualizado.
      * @param {Object} userData - Os dados do usuário a serem atualizados.
      * @param {string} userData.email - O novo endereço de email do usuário.
-     * @param {string} userData.nome - O novo nome do usuário.
+     * @param {string} userData. - O novo name do usuário.
      * @param {string} userData.password - A nova senha do usuário.
      * @param {Date} userData.birthAt - A nova data de nascimento do usuário.
      * @returns {Promise<any>} Uma promessa que resolve quando a atualização é bem-sucedida.
      * @throws {Error} Lança um erro se o usuário não existir.
      */
-    async updatePatch(id: number, { email, nome, password, birthAt }: UpdatePatchUserDTO) {
+    async updatePatch(id: number, { email, name, password, birthAt }: UpdatePatchUserDTO) {
         const data: any = {};
         await this.exists(id);
-        const updateFields = { email, nome, password, birthAt };
+        const updateFields = { email, name, password, birthAt };
         for (const key in updateFields) {
             if (updateFields[key] !== undefined) {
                 if (key === 'birthAt') {
