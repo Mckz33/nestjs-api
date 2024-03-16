@@ -9,6 +9,14 @@ export class UserService {
 
     constructor(private readonly prisma: PrismaService) { }
 
+    /**
+     * Cria um novo usuário com os dados fornecidos.
+     * @param {CreateUserDTO} userData - Os dados do usuário a serem criados.
+     * @param {string} userData.email - O endereço de email do novo usuário.
+     * @param {string} userData.nome - O nome do novo usuário.
+     * @param {string} userData.password - A senha do novo usuário.
+     * @returns {Promise<any>} Uma promessa que resolve quando o usuário é criado com sucesso.
+     */
     async create({ email, nome, password }: CreateUserDTO) {
 
         return this.prisma.user.create({
@@ -25,6 +33,10 @@ export class UserService {
 
     }
 
+    /**
+     * Retorna todos os usuários.
+     * @returns {Promise<any[]>} Uma promessa que resolve em uma lista de todos os usuários.
+     */
     async getAll() {
         return this.prisma.user.findMany(
             //     {
@@ -37,6 +49,12 @@ export class UserService {
         );
     }
 
+    /**
+     * Retorna um usuário pelo ID.
+     * @param {number} id - O ID do usuário a ser retornado.
+     * @returns {Promise<any>} Uma promessa que resolve no usuário correspondente ao ID fornecido.
+     * @throws {Error} Lança um erro se o usuário não existir.
+     */
     async findById(id: number) {
 
         await this.exists(id);
@@ -47,6 +65,17 @@ export class UserService {
         });
     }
 
+    /**
+     * Atualiza um usuário pelo ID com os dados fornecidos.
+     * @param {number} id - O ID do usuário a ser atualizado.
+     * @param {UpdatePutUserDTO} userData - Os dados do usuário a serem atualizados.
+     * @param {string} userData.email - O novo endereço de email do usuário.
+     * @param {string} userData.nome - O novo nome do usuário.
+     * @param {string} userData.password - A nova senha do usuário.
+     * @param {Date | null} userData.birthAt - A nova data de nascimento do usuário ou nulo.
+     * @returns {Promise<any>} Uma promessa que resolve quando a atualização é bem-sucedida.
+     * @throws {Error} Lança um erro se o usuário não existir.
+     */
     async updatePut(id: number, { email, nome, password, birthAt }: UpdatePutUserDTO) {
         await this.exists(id);
         return this.prisma.user.update({
@@ -56,6 +85,18 @@ export class UserService {
             }
         });
     }
+
+    /**
+     * Atualiza parcialmente um usuário no banco de dados com os dados fornecidos.
+     * @param {number} id - O ID do usuário a ser atualizado.
+     * @param {Object} userData - Os dados do usuário a serem atualizados.
+     * @param {string} userData.email - O novo endereço de email do usuário.
+     * @param {string} userData.nome - O novo nome do usuário.
+     * @param {string} userData.password - A nova senha do usuário.
+     * @param {Date} userData.birthAt - A nova data de nascimento do usuário.
+     * @returns {Promise<any>} Uma promessa que resolve quando a atualização é bem-sucedida.
+     * @throws {Error} Lança um erro se o usuário não existir.
+     */
     async updatePatch(id: number, { email, nome, password, birthAt }: UpdatePatchUserDTO) {
         const data: any = {};
         await this.exists(id);
@@ -77,6 +118,12 @@ export class UserService {
         });
     }
 
+    /**
+     * Exclui um usuário pelo ID.
+     * @param {number} id - O ID do usuário a ser excluído.
+     * @returns {Promise<any>} Uma promessa que resolve quando o usuário é excluído com sucesso.
+     * @throws {NotFoundException} Lança um erro se o usuário não existe.
+     */
     async delete(id: number) {
         await this.exists(id);
         return this.prisma.user.delete({
@@ -86,6 +133,12 @@ export class UserService {
         });
     }
 
+    /**
+     * Verifica se um usuário com o ID fornecido existe no banco de dados.
+     * @param {number} id - O ID do usuário a ser verificado.
+     * @returns {Promise<void>} Uma promessa vazia.
+     * @throws {NotFoundException} Lança um erro se o usuário não existe.
+     */
     async exists(id: number) {
         if (!(await this.prisma.user.count({
             where: {
