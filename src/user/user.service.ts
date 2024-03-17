@@ -3,6 +3,7 @@ import { CreateUserDTO } from "src/dtos/create-user.dto";
 import { UpdatePatchUserDTO } from "src/dtos/update-patch-user.dto";
 import { UpdatePutUserDTO } from "src/dtos/update-put-user.dto copy";
 import { PrismaService } from "src/prisma/prisma.service";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class UserService {
@@ -14,24 +15,18 @@ export class UserService {
 
     constructor(private readonly prisma: PrismaService) { }
 
-    
     /**
      * Cria um novo usuário.
      * @param {CreateUserDTO} userData - Dados do usuário a ser criado.
      * @returns {Promise<any>} - Uma Promise que resolve com os dados do usuário criado.
      */
-    async create({ email, name, password }: CreateUserDTO) {
+    async create(data: CreateUserDTO) {
+
+        const salt = await bcrypt.genSalt();
+        data.password = await bcrypt.hash(data.password, salt);
 
         return this.prisma.user.create({
-            data: {
-                email,
-                name,
-                password
-            },
-            // select: {
-            //     id: true,
-            //     name: true
-            // }
+            data,
         });
 
     }
@@ -77,6 +72,10 @@ export class UserService {
      */
     async updatePut(id: number, { email, name, password, birthAt, role }: UpdatePutUserDTO) {
         await this.exists(id);
+
+        const salt = await bcrypt.genSalt();
+        password = await bcrypt.hash(password, salt);
+
         return this.prisma.user.update({
             data: { email, name, password, birthAt: birthAt ? new Date(birthAt) : null, role },
             where: {
@@ -93,44 +92,42 @@ export class UserService {
      * @throws {NotFoundException} - Lança NotFoundException se o usuário não for encontrado.
      */
     async updatePatch(id: number, { email, name, password, birthAt, role }: UpdatePatchUserDTO) {
-        const data: any = {};
         await this.exists(id);
 
+        const data: any = {};
         const updateFields = { email, name, password, birthAt, role };
-
-        // if (birthAt) {
-        //     data.birthAt = new Date(birthAt);
-        // }
-        // if (email) {
-        //     data.email = email;
-        // }
-        // if (name) {
-        //     data.name = name;
-        // }
-        // if (password) {
-        //     data.password = password;
-        // }
-        // if (role) {
-        //     data.role = role;
-        // }
 
         for (const key in updateFields) {
             if (updateFields[key] !== undefined) {
-                if (key === 'birthAt' || key === 'role') {
-                    data[key] = key === 'birthAt' ? new Date(updateFields[key]) : updateFields[key];
-                } else {
-                    data[key] = updateFields[key];
+                switch (key) {
+                    case 'birthAt':
+                        data.birthAt = new Date(updateFields[key]);
+                        break;
+                    case 'email':
+                        data.email = email;
+                        break;
+                    case 'name':
+                        data.name = name;
+                        break;
+                    case 'password':
+                        const salt = await bcrypt.genSalt();
+                        data.password = await bcrypt.hash(password, salt);
+                        break;
+                    case 'role':
+                        data.role = role;
+                        break;
+                    default:
+                        break;
                 }
             }
         }
 
         return this.prisma.user.update({
             data,
-            where: {
-                id
-            }
+            where: { id }
         });
     }
+
 
     /**
      * Exclui um usuário pelo ID.
