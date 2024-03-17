@@ -76,10 +76,10 @@ export class UserService {
      * @returns {Promise<any>} Uma promessa que resolve quando a atualização é bem-sucedida.
      * @throws {Error} Lança um erro se o usuário não existir.
      */
-    async updatePut(id: number, { email, name, password, birthAt }: UpdatePutUserDTO) {
+    async updatePut(id: number, { email, name, password, birthAt, role }: UpdatePutUserDTO) {
         await this.exists(id);
         return this.prisma.user.update({
-            data: { email, name, password, birthAt: birthAt ? new Date(birthAt) : null },
+            data: { email, name, password, birthAt: birthAt ? new Date(birthAt) : null, role },
             where: {
                 id
             }
@@ -97,19 +97,38 @@ export class UserService {
      * @returns {Promise<any>} Uma promessa que resolve quando a atualização é bem-sucedida.
      * @throws {Error} Lança um erro se o usuário não existir.
      */
-    async updatePatch(id: number, { email, name, password, birthAt }: UpdatePatchUserDTO) {
+    async updatePatch(id: number, { email, name, password, birthAt, role }: UpdatePatchUserDTO) {
         const data: any = {};
         await this.exists(id);
-        const updateFields = { email, name, password, birthAt };
-        for (const key in updateFields) {
-            if (updateFields[key] !== undefined) {
-                if (key === 'birthAt') {
-                    data[key] = new Date(updateFields[key]);
-                } else {
-                    data[key] = updateFields[key];
-                }
-            }
+    
+        const updateFields = { email, name, password, birthAt, role };
+
+        if (birthAt) {
+            data.birthAt = new Date(birthAt);
         }
+        if (email) {
+            data.email = email;
+        }
+        if (name) {
+            data.name = name;
+        }
+        if (password) {
+            data.password = password;
+        }
+        if (role) {
+            data.role = role;
+        }
+
+        // for (const key in updateFields) {
+        //     if (updateFields[key] !== undefined) {
+        //         if (key === 'birthAt' || key === 'role') {
+        //             data[key] = key === 'birthAt' ? new Date(updateFields[key]) : updateFields[key];
+        //         } else {
+        //             data[key] = updateFields[key];
+        //         }
+        //     }
+        // }
+    
         return this.prisma.user.update({
             data,
             where: {
@@ -117,7 +136,7 @@ export class UserService {
             }
         });
     }
-
+    
     /**
      * Exclui um usuário pelo ID.
      * @param {number} id - O ID do usuário a ser excluído.
