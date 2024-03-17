@@ -70,7 +70,13 @@ export class AuthService {
         }
     }
 
-
+    /**
+     * Autentica um usuário com base no e-mail e senha fornecidos.
+     * @param {string} email - E-mail do usuário.
+     * @param {string} password - Senha do usuário.
+     * @returns {Promise<any>} Promessa que resolve para o token de acesso gerado após a autenticação bem-sucedida.
+     * @throws {UnauthorizedException} Exceção se o e-mail ou senha estiverem incorretos.
+     */
     async login(email: string, password: string) {
         const user = await this.prisma.user.findFirst({
             where: {

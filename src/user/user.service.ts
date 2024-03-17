@@ -15,10 +15,11 @@ export class UserService {
 
     constructor(private readonly prisma: PrismaService) { }
 
+
     /**
-     * Cria um novo usuário.
-     * @param {CreateUserDTO} userData - Dados do usuário a ser criado.
-     * @returns {Promise<any>} - Uma Promise que resolve com os dados do usuário criado.
+     * Cria um novo usuário com base nos dados fornecidos.
+     * @param {CreateUserDTO} data - Dados do usuário a serem criados.
+     * @returns {Promise<any>} Promessa que resolve para o novo usuário criado.
      */
     async create(data: CreateUserDTO) {
 
@@ -85,11 +86,10 @@ export class UserService {
     }
 
     /**
-     * Atualiza um usuário usando o método PATCH.
-     * @param {number} id - O ID do usuário.
-     * @param {UpdatePatchUserDTO} userData - Dados do usuário a serem atualizados.
-     * @returns {Promise<any>} - Uma Promise que resolve com os dados do usuário atualizado.
-     * @throws {NotFoundException} - Lança NotFoundException se o usuário não for encontrado.
+     * Atualiza parcialmente um usuário com base no ID e nos dados fornecidos.
+     * @param {number} id - ID do usuário a ser atualizado.
+     * @param {UpdatePatchUserDTO} data - Dados do usuário a serem atualizados.
+     * @returns {Promise<any>} Promessa que resolve para o usuário atualizado parcialmente.
      */
     async updatePatch(id: number, { email, name, password, birthAt, role }: UpdatePatchUserDTO) {
         await this.exists(id);
