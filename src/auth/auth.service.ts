@@ -17,6 +17,11 @@ export class AuthService {
         private readonly userService: UserService
     ) { }
 
+    /**
+     * Cria um token de acesso com base nos dados do usuário.
+     * @param {User} user - Dados do usuário.
+     * @returns {Object} Objeto contendo o token de acesso.
+     */
     createToken(user: User) {
         return {
             acessToken: this.jwtService.sign({
@@ -32,6 +37,12 @@ export class AuthService {
         }
     }
 
+    /**
+     * Verifica a validade de um token.
+     * @param {string} token - Token a ser verificado.
+     * @returns {Object} Dados do token se for válido.
+     * @throws {BadRequestException} Lança uma exceção se o token for inválido.
+     */
     checkToken(token: string) {
         try {
             const data = this.jwtService.verify(token, {
@@ -44,6 +55,11 @@ export class AuthService {
         }
     }
 
+    /**
+     * Verifica se um token é válido.
+     * @param {string} token - Token a ser verificado.
+     * @returns {boolean} true se o token for válido, false caso contrário.
+     */
     isValidToken(token: string) {
         try {
             this.checkToken(token)
@@ -53,6 +69,13 @@ export class AuthService {
         }
     }
 
+    /**
+     * Realiza o login de um usuário com e-mail e senha.
+     * @param {string} email - E-mail do usuário.
+     * @param {string} password - Senha do usuário.
+     * @returns {Object} Objeto contendo o token de acesso.
+     * @throws {UnauthorizedException} Lança uma exceção se as credenciais forem inválidas.
+     */
     async login(email: string, password: string) {
         const user = await this.prisma.user.findFirst({
             where: {
@@ -66,6 +89,12 @@ export class AuthService {
         return this.createToken(user);
     }
 
+    /**
+     * Solicita a redefinição da senha do usuário com base no e-mail.
+     * @param {string} email - E-mail do usuário.
+     * @returns {boolean} true se a solicitação for bem-sucedida.
+     * @throws {UnauthorizedException} Lança uma exceção se o e-mail fornecido não estiver associado a nenhum usuário.
+     */
     async forget(email: string) {
         const user = await this.prisma.user.findFirst({
             where: {
@@ -78,6 +107,12 @@ export class AuthService {
         return true;
     }
 
+    /**
+     * Redefine a senha do usuário com base no token fornecido.
+     * @param {string} password - Nova senha do usuário.
+     * @param {string} token - Token de redefinição de senha.
+     * @returns {Object} Objeto contendo o token de acesso.
+     */
     async reset(password: string, token: string) {
         const id = 0;
         const user = await this.prisma.user.update({
@@ -91,6 +126,11 @@ export class AuthService {
         return this.createToken(user);
     }
 
+    /**
+     * Registra um novo usuário.
+     * @param {AuthRegisterDTO} data - Dados do usuário a serem registrados.
+     * @returns {Object} Objeto contendo o token de acesso.
+     */
     async register(data: AuthRegisterDTO) {
         const user = await this.userService.create(data);
         return this.createToken(user);

@@ -8,8 +8,13 @@ export class AuthGuard implements CanActivate {
     constructor(
         private readonly authService: AuthService,
         private readonly userService: UserService
-        ) { }
+    ) { }
 
+    /**
+     * Determina se o usuário está autenticado e possui permissão para acessar o recurso.
+     * @param {ExecutionContext} context - Contexto de execução da requisição.
+     * @returns {Promise<boolean>} Promessa que resolve para true se o usuário estiver autenticado e tiver permissão, caso contrário, false.
+     */
     async canActivate(context: ExecutionContext) {
 
         const request = context.switchToHttp().getRequest();
@@ -22,7 +27,7 @@ export class AuthGuard implements CanActivate {
             request.user = await this.userService.findById(data.id);
 
             return true;
-            
+
         } catch (error) {
             return false;
         }

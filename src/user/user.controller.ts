@@ -9,7 +9,7 @@ import { Role } from 'src/enums/role.enum';
 import { RoleGuard } from 'src/guards/role.guard';
 import { AuthGuard } from 'src/guards/auth.guard';
 
-
+// @Roles(Role.Admin)
 // @UseInterceptors(LogInterceptor)
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('users')
@@ -18,9 +18,9 @@ export class UserController {
     constructor(private userService: UserService) { }
 
     /**
-     * Cria um novo usuário com os dados fornecidos.
-     * @param {CreateUserDTO} data - Os dados do usuário a serem criados.
-     * @returns {Promise<any>} Uma promessa que resolve quando o usuário é criado com sucesso.
+     * Cria um novo usuário.
+     * @param {CreateUserDTO} data - Dados para criar um novo usuário.
+     * @returns {Promise<any>} Promessa que resolve para o usuário criado.
      */
     @Roles(Role.Admin)
     @Post()
@@ -29,32 +29,32 @@ export class UserController {
     }
 
     /**
-     * Retorna uma lista de todos os usuários.
-     * @returns {Promise<any[]>} Uma promessa que resolve em uma lista de todos os usuários.
+     * Obtém todos os usuários.
+     * @returns {Promise<any>} Promessa que resolve para uma array de usuários.
      */
-    @Roles(Role.Admin)
+    @Roles(Role.Admin, Role.User)
     @Get()
-    async list() {
+    async getAll() {
         return this.userService.getAll();
     }
 
     /**
-     * Retorna um usuário pelo ID.
-     * @param {number} id - O ID do usuário a ser retornado.
-     * @returns {Promise<any>} Uma promessa que resolve no usuário correspondente ao ID fornecido.
+     * Encontra um usuário pelo ID.
+     * @param {number} id - ID do usuário.
+     * @returns {Promise<any>} Promessa que resolve para o usuário encontrado.
      */
     @Roles(Role.Admin)
     @Get(':id')
-    async readOne(@ParamId() id: number) {
+    async findById(@ParamId() id: number) {
         console.log({ id });
         return this.userService.findById(id);
     }
 
     /**
-     * Atualiza um usuário pelo ID com os dados fornecidos.
-     * @param {UpdatePutUserDTO} data - Os dados do usuário a serem atualizados.
-     * @param {number} id - O ID do usuário a ser atualizado.
-     * @returns {Promise<any>} Uma promessa que resolve quando a atualização é bem-sucedida.
+     * Atualiza um usuário usando o método PUT.
+     * @param {UpdatePutUserDTO} data - Dados para atualizar o usuário.
+     * @param {number} id - ID do usuário.
+     * @returns {Promise<any>} Promessa que resolve para o usuário atualizado.
      */
     @Roles(Role.Admin)
     @Put(':id')
@@ -62,11 +62,12 @@ export class UserController {
 
         return this.userService.updatePut(id, data);
     }
+
     /**
-     * Atualiza parcialmente um usuário pelo ID com os dados fornecidos.
-     * @param {UpdatePatchUserDTO} data - Os dados do usuário a serem atualizados.
-     * @param {number} id - O ID do usuário a ser atualizado.
-     * @returns {Promise<any>} Uma promessa que resolve quando a atualização parcial é bem-sucedida.
+     * Atualiza um usuário usando o método PATCH.
+     * @param {UpdatePatchUserDTO} data - Dados para aplicar patch no usuário.
+     * @param {number} id - ID do usuário.
+     * @returns {Promise<any>} Promessa que resolve para o usuário com patch aplicado.
      */
     @Roles(Role.Admin)
     @Patch(':id')
@@ -76,8 +77,8 @@ export class UserController {
 
     /**
      * Exclui um usuário pelo ID.
-     * @param {number} id - O ID do usuário a ser excluído.
-     * @returns {Promise<any>} Uma promessa que resolve quando o usuário é excluído com sucesso.
+     * @param {number} id - ID do usuário.
+     * @returns {Promise<any>} Promessa que resolve para o usuário excluído.
      */
     @Roles(Role.Admin)
     @Delete(':id')
