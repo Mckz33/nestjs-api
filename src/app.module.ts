@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 
 @Module({
   imports: [
@@ -16,7 +18,28 @@ import { ConfigModule } from '@nestjs/config';
       limit: 6,
     }]),
     forwardRef(() => UserModule),
-    forwardRef(() => AuthModule)
+    forwardRef(() => AuthModule),
+    MailerModule.forRoot({
+      // https://ethereal.email/create
+      transport: {
+        host: 'smtp.ethereal.email',
+        port: 587,
+        auth: {
+          user: 'bernadette.toy@ethereal.email',
+          pass: 'HKrxVVDeypzD2M3RQB'
+        }
+      },
+      defaults: {
+        from: '"Mackenzie" <bernadette.toy@ethereal.email>',
+      },
+      template: {
+        dir: __dirname + "/templates",
+        adapter: new PugAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [AppService, {
@@ -25,13 +48,13 @@ import { ConfigModule } from '@nestjs/config';
   }],
   exports: [AppService]
 })
-export class AppModule implements NestModule{
+export class AppModule implements NestModule {
 
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(UserIdCheckMiddleware).forRoutes({
       path: 'users/:id',
       method: RequestMethod.ALL
     });
-  } 
+  }
 
 }

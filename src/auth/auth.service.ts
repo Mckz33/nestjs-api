@@ -5,6 +5,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { AuthRegisterDTO } from "./dto/auth-register.dto";
 import { UserService } from "src/user/user.service";
 import * as bcrypt from "bcrypt";
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +16,8 @@ export class AuthService {
     constructor(
         private readonly jwtService: JwtService,
         private readonly prisma: PrismaService,
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        private readonly mailer: MailerService
     ) { }
 
     /**
@@ -96,10 +98,9 @@ export class AuthService {
     }
 
     /**
-     * Solicita a redefinição da senha do usuário com base no e-mail.
-     * @param {string} email - E-mail do usuário.
-     * @returns {boolean} true se a solicitação for bem-sucedida.
-     * @throws {UnauthorizedException} Lança uma exceção se o e-mail fornecido não estiver associado a nenhum usuário.
+     * Envia um e-mail para redefinição de senha do usuário.
+     * @param {string} email - O endereço de e-mail do usuário solicitando a redefinição de senha.
+     * @returns {Promise<boolean>} - Uma Promise indicando se o e-mail de redefinição de senha foi enviado com sucesso.
      */
     async forget(email: string) {
         const user = await this.prisma.user.findFirst({
@@ -110,26 +111,61 @@ export class AuthService {
         if (!user) {
             throw new UnauthorizedException("E-mail está incorreto.");
         }
+
+        const token = this.jwtService.sign({
+            id: user.id
+        }, {
+            expiresIn: '30 minutes',
+            subject: String(user.id),
+            issuer: 'forget',
+            audience: 'users',
+        });
+        await this.mailer.sendMail({
+            subject: 'Recuperação de Senha',
+            to: 'mackenzie.max.rj@gmail.com',
+            template: 'forget',
+            context: {
+                name: user.name,
+                token
+            }
+        });
+
         return true;
     }
 
     /**
-     * Redefine a senha do usuário com base no token fornecido.
-     * @param {string} password - Nova senha do usuário.
-     * @param {string} token - Token de redefinição de senha.
-     * @returns {Object} Objeto contendo o token de acesso.
+     * Reseta a senha do usuário com base no token de redefinição de senha.
+     * @param {string} password - A nova senha a ser definida para o usuário.
+     * @param {string} token - O token de redefinição de senha associado ao usuário.
+     * @returns {Promise<string>} - Uma Promise que resolve com um token de acesso JWT após a redefinição da senha.
      */
     async reset(password: string, token: string) {
-        const id = 0;
-        const user = await this.prisma.user.update({
-            where: {
-                id,
-            },
-            data: {
-                password,
-            },
-        })
-        return this.createToken(user);
+
+        try {
+            const data: any = this.jwtService.verify(token, {
+                issuer: 'forget',
+                audience: 'users',
+
+            });
+            if (isNaN(Number(data.id))) {
+                throw new BadRequestException("O token é inválido");
+            }
+
+            const salt = await bcrypt.genSalt();
+            password = await bcrypt.hash(password, salt);
+
+            const user = await this.prisma.user.update({
+                where: {
+                    id: Number(data.id)
+                },
+                data: {
+                    password,
+                },
+            })
+            return this.createToken(user);
+        } catch (error) {
+            throw new BadRequestException(error);
+        }
     }
 
     /**
