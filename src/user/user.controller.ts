@@ -1,13 +1,13 @@
-import { ParamId } from 'src/decorators/param-id.decorator';
+import { ParamId } from '../decorators/param-id.decorator';
 import { UserService } from './user.service';
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, UseGuards } from "@nestjs/common";
-import { CreateUserDTO } from "src/dtos/create-user.dto";
-import { UpdatePatchUserDTO } from "src/dtos/update-patch-user.dto";
-import { UpdatePutUserDTO } from "src/dtos/update-put-user.dto copy";
-import { Roles } from 'src/decorators/roles.decorator';
-import { Role } from 'src/enums/role.enum';
-import { RoleGuard } from 'src/guards/role.guard';
-import { AuthGuard } from 'src/guards/auth.guard';
+import { CreateUserDTO } from "../dtos/create-user.dto";
+import { UpdatePatchUserDTO } from "../dtos/update-patch-user.dto";
+import { UpdatePutUserDTO } from "../dtos/update-put-user.dto";
+import { Roles } from '../decorators/roles.decorator';
+import { Role } from '../enums/role.enum';
+import { RoleGuard } from '../guards/role.guard';
+import { AuthGuard } from '../guards/auth.guard';
 
 // @Roles(Role.Admin)
 // @UseInterceptors(LogInterceptor)
