@@ -14,8 +14,8 @@ model User {
   password  String    @db.VarChar(127)
   birthAt   DateTime? @db.Date
   role      Int       @default(1)
-  createdAt DateTime  @default(now()) @db.Timestamp(0)
-  updatedAt DateTime  @default(now()) @db.Timestamp(0)
+  // createdAt DateTime  @default(now()) @db.Timestamp(0)
+  // updatedAt DateTime  @default(now()) @db.Timestamp(0)
 
 //@@map é referencia a tabela no banco de dados
   @@map("users")

@@ -25,18 +25,15 @@ export class UserService {
 
         const salt = await bcrypt.genSalt();
         data.password = await bcrypt.hash(data.password, salt);
-
-        return this.prisma.user.create({
-            data,
-        });
-
+        
+        return this.prisma.user.create({ data });
     }
 
     /**
      * Retorna todos os usuários.
      * @returns {Promise<any[]>} - Uma Promise que resolve com uma matriz de usuários.
      */
-    async getAll() {
+    async findAll() {
         return this.prisma.user.findMany(
             //     {
             //     where: {
