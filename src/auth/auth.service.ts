@@ -162,9 +162,13 @@ export class AuthService {
                     password,
                 },
             })
+            
             return this.createToken(user);
+
         } catch (error) {
+
             throw new BadRequestException(error);
+            
         }
     }
 
@@ -174,6 +178,7 @@ export class AuthService {
      * @returns {Object} Objeto contendo o token de acesso.
      */
     async register(data: AuthRegisterDTO) {
+        delete data.role;
         const user = await this.userService.create(data);
         return this.createToken(user);
     }

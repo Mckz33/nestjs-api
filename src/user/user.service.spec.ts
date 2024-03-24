@@ -7,11 +7,6 @@ import { UpdatePatchUserDTO } from '../dtos/update-patch-user.dto';
 import { NotFoundException } from '@nestjs/common';
 import { Role } from '../enums/role.enum';
 
-const mockUsers = [
-  { id: 1, name: 'John Doe', email: 'john@gmail.com', password: 'password1', birthAt: '2000-01-01', role: Role.User },
-  { id: 2, name: 'Jane Smith', email: 'jane@gmail.com', password: 'password2', birthAt: '1995-05-15', role: Role.Admin },
-  { id: 3, name: 'Bob Johnson', email: 'bob@gmail.com', password: 'password3', birthAt: '1980-10-30', role: Role.User },
-];
 
 // Mock PrismaService
 const prismaServiceMock = () => ({
@@ -52,7 +47,6 @@ describe('UserService', () => {
   describe('create', () => {
     it('should create a user', async () => {
       const createUserDto: CreateUserDTO = {
-        id: 1,
         name: "Mackenzie",
         email: "john@gmail.com",
         password: `Abcd@a1b2c3d4`,
@@ -76,7 +70,6 @@ describe('UserService', () => {
   describe('findAll', () => {
     it('should return all users', async () => {
       const expectedResult = [{
-        id: 1,
         name: "Mackenzie",
         email: "john@gmail.com",
         password: `Abcd@a1b2c3d4`,
@@ -96,7 +89,6 @@ describe('UserService', () => {
   describe('findById', () => {
     it('should return a user by id', async () => {
       const expectedResult = [{
-        id: 1,
         name: "Mackenzie",
         email: "john@gmail.com",
         password: `Abcd@a1b2c3d4`,
@@ -126,7 +118,6 @@ describe('UserService', () => {
   describe('updatePut', () => {
     it('should update a user using PUT method', async () => {
       const updatePutUserDto: UpdatePutUserDTO = {
-        id: 1,
         name: "John Doe",
         email: "john@gmail.com",
         password: `Abcd@abcd1234`,

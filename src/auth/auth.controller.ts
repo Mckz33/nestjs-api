@@ -1,5 +1,5 @@
 import { AuthService } from './auth.service';
-import { BadRequestException, Body, Controller, FileTypeValidator, MaxFileSizeValidator, ParseFilePipe, Post, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, FileTypeValidator, MaxFileSizeValidator, ParseFilePipe, Post, Req, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from "@nestjs/common";
 import { AuthLoginDTO } from "./dto/auth-login.dto";
 import { AuthRegisterDTO } from "./dto/auth-register.dto";
 import { AuthForgetDTO } from "./dto/auth-forget.dto";
@@ -67,8 +67,8 @@ export class AuthController {
      */
     @UseGuards(AuthGuard)
     @Post('me')
-    async me(@User() user) {
-        return { user };
+    async me(@User() user, @Req() { tokenPayload }) {
+        return { user, tokenPayload };
     }
 
     @UseInterceptors(FileInterceptor('file'))
@@ -79,7 +79,7 @@ export class AuthController {
         @UploadedFile(new ParseFilePipe({
             validators: [
                 new FileTypeValidator({ fileType: 'image/png' }),
-                new MaxFileSizeValidator({maxSize: 1024 * 50})
+                new MaxFileSizeValidator({ maxSize: 1024 * 50 })
             ]
         })) photo: Express.Multer.File) {
 
