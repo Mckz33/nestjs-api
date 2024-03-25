@@ -8,7 +8,10 @@ import { NotFoundException } from '@nestjs/common';
 import { Role } from '../enums/role.enum';
 
 
-// Mock PrismaService
+/**
+ * Mock do serviço de usuário.
+ * @type {Object}
+ */
 const prismaServiceMock = () => ({
   user: {
     create: jest.fn(),
